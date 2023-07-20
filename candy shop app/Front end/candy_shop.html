@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candy - Shop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="candy_shop.css">
+</head>
+<body>
+   <div class="container">
+    <div class="d-flex justify-content-center">
+        <div class="col">
+           <div class="border border-success border-3 rounded-3 p-4 mt-5 mb-5">
+            <div class="header text-light">
+                <h2 style="text-align: center;">ITEMS LIST</h2>
+            </div><hr>
+            <div id="msg"></div>
+            <form>
+                <div>
+                    <label for="item-name" class="form-label text-light">Item Name : </label>
+                    <input type="text" name="itemName" id="item-name" class="form-control">
+                </div><br>
+                <div>
+                    <label for="description" class="form-label text-light">Description : </label>
+                    <input type="text" name="description" id="description" class="form-control">
+                </div><br>
+                <div>
+                    <label for="price" class="form-label text-light">Price : </label>
+                    <input type="number" name="price" id="price" class="form-control">
+                </div><br>
+                <div>
+                    <label for="qty" class="form-label text-light">Qty: </label>
+                    <input type="number" name="qty" id="qty" class="form-control">
+                </div><br>
+                <div>
+                    <button id="submit" class="btn btn-success" style="width: 100%">Add Expense</button>
+                    <button id="update" class="btn btn-primary" style="width: 100%; display: none;">Update</button>
+                </div>
+            </form><br>
+            <!-- Add this table in your HTML body -->
+            <table class="table table-striped table-dark">
+                <thead>
+                <tr>
+                    <th scope="col">Item Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Qty</th>
+                </tr>
+                </thead>
+                <tbody id="item-table"></tbody>
+            </table>
+           </div>
+        </div>
+    </div>
+   </div>
+   <script src="candy_shop.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+</body>
+</html>
+ 

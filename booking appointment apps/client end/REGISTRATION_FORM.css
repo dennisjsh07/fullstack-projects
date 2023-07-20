@@ -1,0 +1,13 @@
+body{
+    background-color: black;
+}    
+
+.border{
+    background: linear-gradient(white,skyblue);
+}
+
+.form-control{
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+}
