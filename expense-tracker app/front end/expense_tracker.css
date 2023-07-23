@@ -16,8 +16,6 @@ border-color: black;
 box-shadow: 0 0 0 0.2rem rgba(57, 255, 20, 0.45); 
 }
 
-
-
 .form-select option {
     background-color: rgb(20,20,20);
     color: white;
