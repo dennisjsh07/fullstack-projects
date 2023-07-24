@@ -23,4 +23,24 @@ exports.addUsers = async (req,res,next)=>{
     }
 };
 
+exports.userLogin = async (req,res,next)=>{
+    try{
+        const {email, password} = req.body;
+
+        const existingUser = await usersModel.findOne({where: {email}});
+        if(existingUser){
+            // if(password === existingUser.password){
+            //     res.status(200).json({message: 'User logged in successfully'});
+            // }
+            // else{
+            //     res.status(401).json({error: 'Email and Password are not matching'});
+            // }
+            console.log('existing user details: ',existingUser);
+        }
+    } catch(err){
+        console.log('error finding user',err);
+        res.status(500).json({error: err})
+    }
+} 
+
 
