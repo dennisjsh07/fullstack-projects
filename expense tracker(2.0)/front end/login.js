@@ -14,7 +14,7 @@ async function onSubmit(e){
 
     // post the values...
     try{
-        const response = await axios.post('http://localhost:3000/users/userLogin',myObj);
+        const response = await axios.post('http://localhost:3000/users/user-login',myObj);
         console.log(response);
         msgDiv.className = "alert alert-success text-center";
         msgDiv.textContent = response.data.message;

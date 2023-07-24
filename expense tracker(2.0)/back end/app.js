@@ -21,3 +21,4 @@ sequelize
     console.log('table created');
 })
 .catch(err=>console.log(err));
+ 
