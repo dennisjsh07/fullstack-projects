@@ -11,15 +11,8 @@
         <div class="d-flex justify-content-center">
             <div class="col col-lg-10 col-11">
                 <div class="border border-primary border-2 rounded-2 p-4 mt-5">
-                    <div class="header">
-                        <h4 style="text-align: center;">CREATE YOUR ACCOUNT</h4>
-                    </div><hr>
                     <div id="msg"></div><br>
                     <form>
-                        <div class="mb-3"> 
-                            <label for="name" class="form-label">Enter Your Name : </label>
-                            <input type="text" name="name" id="name" class="form-control">
-                        </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Enter Your Email : </label>
                             <input type="email" name="email" id="email" class="form-control" required>
@@ -29,7 +22,10 @@
                             <input type="password" name="password" id="password" class="form-control" required>
                         </div><br>
                         <div>
-                            <button class="btn btn-primary" id="submit" style="width: 25%">Signup</button>
+                            <button class="btn btn-primary" id="submit" style="width: 25%">Login</button>
+                        </div><br>
+                        <div>
+                            <a href="/signUp.html">New User - Signup Now</a>
                         </div>
                     </form>
                 </div>
@@ -37,7 +33,7 @@
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
-    <script src="signUp.js"></script>
+    <script src="login.js"></script>
 </body>
 </html>
 
