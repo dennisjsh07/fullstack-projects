@@ -1,7 +1,8 @@
 // import core modules...
 const express = require('express');
 const bodyParser = require('body-parser');
-const usersController = require('./routes/users');
+const usersRoute = require('./routes/users');
+const expenseRoute = require('./routes/expense');
 const sequelize = require('./util/database');
 const cors = require('cors');
 
@@ -11,7 +12,10 @@ app.use(cors());
 
 app.use(bodyParser.json());
 
-app.use('/users',usersController);
+app.use('/users',usersRoute);
+
+app.use('/expense',expenseRoute);
+
 
 sequelize
 // .sync({force: true})
