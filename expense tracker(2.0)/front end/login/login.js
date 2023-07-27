@@ -9,15 +9,17 @@ async function onSubmit(e){
     const myObj = {
         email: document.getElementById('email').value,
         password: document.getElementById('password').value
-
     }
 
     // post the values...
     try{
         const response = await axios.post('http://localhost:3000/users/user-login',myObj);
-        console.log(response);
+        console.log(response.data);
+        localStorage.setItem('token',response.data.token);
         msgDiv.className = "alert alert-success text-center";
         msgDiv.textContent = response.data.message;
+        // redirect to expense page...
+        window.location.href = '../expense tracker/expense.html';
     } catch(err){
         console.log(err);
         msgDiv.className = "alert alert-danger text-center";

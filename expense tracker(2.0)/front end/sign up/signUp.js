@@ -19,6 +19,8 @@ async function onSubmit(e){
         console.log(response)
         msgDiv.className = "alert alert-success text-center";
         msgDiv.textContent = response.data.message;
+        // redirect to login page...
+        window.location.href = '../login/login.html';
     } catch(err){
         console.log(err);
         msgDiv.className = "alert alert-danger text-center";

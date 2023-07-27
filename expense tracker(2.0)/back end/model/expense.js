@@ -20,7 +20,7 @@ const Expense = sequelize.define('expense',{
     expenseCategory: {
         type: Sequelize.STRING,
         allowNull: false
-    }
+    },
 });
 
 module.exports = Expense;

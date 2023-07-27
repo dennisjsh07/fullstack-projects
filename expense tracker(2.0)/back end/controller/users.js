@@ -1,5 +1,7 @@
 const usersModel = require('../model/users');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+// const crypto = require('crypto');
 
 exports.addUsers = async (req,res,next)=>{
     try{
@@ -17,7 +19,7 @@ exports.addUsers = async (req,res,next)=>{
         }
 
         const saltRounds = 10;
-        bcrypt.hash(password,saltRounds,async(err,hash)=>{
+        bcrypt.hash(password,saltRounds,async(err,hash)=>{ // encrypting the password... 
             if(err){
                 console.log(err)
             }
@@ -47,7 +49,15 @@ exports.userLogin = async (req,res,next)=>{
             // console.log('existing user details: ',existingUser);
             const isPasswordMatch = await bcrypt.compare(password,existingUser.password);
             if(isPasswordMatch){
-                res.status(200).json({message: 'User logged in successfully'});
+                // create payload for jwt...
+                const payload = {userId: existingUser.id,email: existingUser.email};
+
+                // create secret key for jet...
+                // const secretKey = crypto.randomBytes(32).toString('hex');
+
+                // Generate token...
+                const token = jwt.sign(payload,secretKey);
+                res.status(200).json({message: 'User logged in successfully',token});
             }
             else{
                 res.status(401).json({error: 'Email and Password are not matching'});
@@ -61,5 +71,7 @@ exports.userLogin = async (req,res,next)=>{
         res.status(500).json({error: err})
     }
 } 
+ 
+  
  
 
