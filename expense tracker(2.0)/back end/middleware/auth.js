@@ -7,7 +7,7 @@ const authenticate = async (req,res,next)=>{
         const token = req.header('Authorization');
         console.log(token);
         // decrypt the token to find the particular user details encrypted...
-        const user = jwt.verify(token,'enter secret key here');
+        const user = jwt.verify(token,'8884434443d@SecretKey');
         console.log('userID >>>>',user.userId);
         // find the data of the particular user stored using the decrypted userId...
         await User.findByPk(user.userId)

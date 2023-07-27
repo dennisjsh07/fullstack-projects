@@ -1,6 +1,6 @@
 const form = document.querySelector('form');
-const msgDiv = document.getElementById('msg')
-
+const msgDiv = document.getElementById('msg');
+const token = localStorage.getItem('token'); // getting the token stored in localstorage...
 
 form.addEventListener('submit',onsubmit);
 
@@ -14,7 +14,7 @@ e.preventDefault();
     }
 
     try{
-        const response = await axios.post('http://localhost:3000/expense/add-expense',myObj);
+        const response = await axios.post('http://localhost:3000/expense/add-expense',myObj,{headers: {'Authorization': token}});
         getRequest();
         console.log(response);
     } catch(err){
@@ -29,7 +29,6 @@ e.preventDefault();
 
 async function getRequest(){
     try{
-        const token = localStorage.getItem('token'); // getting the token stored in localstorage...
         const response = await axios.get('http://localhost:3000/expense/get-expense',{headers: {'Authorization': token}});
         const expense = response.data.allExpenses;
         console.log(response);
@@ -87,7 +86,7 @@ function showInUi(data){
     async function onDeleteClick(e){
         try{
             const userId = data.id;
-            const response = await axios.delete('http://localhost:3000/expense/delete-expense/'+userId);
+            const response = await axios.delete(`http://localhost:3000/expense/delete-expense/${userId}`, {headers: {'Authorization': token}});
             getRequest();
             console.log(response);
         } catch(err){

@@ -54,6 +54,7 @@ exports.userLogin = async (req,res,next)=>{
 
                 // create secret key for jet...
                 // const secretKey = crypto.randomBytes(32).toString('hex');
+                const secretKey = '8884434443d@SecretKey';
 
                 // Generate token...
                 const token = jwt.sign(payload,secretKey);

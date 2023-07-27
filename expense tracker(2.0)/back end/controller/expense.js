@@ -11,7 +11,7 @@ exports.addExpense = async (req,res,next)=>{
         }
 
         // insert them inside...
-        await expenseModel.create({expenseAmt,expenseDescription,expenseCategory});
+        await expenseModel.create({expenseAmt,expenseDescription,expenseCategory,userId: req.user.id});
         res.status(201).json({message: 'expense added successfully'});
     } catch(err){
         console.log('add expense is failing',err)
@@ -25,7 +25,7 @@ exports.deleteExpense = async(req,res,next)=>{
         if(Eid ==='undefined'){
             return res.status(400).json({error: 'id required to delete'});
         }
-        await expenseModel.destroy({where:{id:Eid}});
+        await expenseModel.destroy({where:{id:Eid, userId: req.user.id}});
         res.sendStatus(200);
     } catch(err){
         console.log('delete expense is failing',err);
