@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../model/users');
+require('dotenv').config();
 
 const authenticate = async (req,res,next)=>{
     try{
@@ -7,7 +8,7 @@ const authenticate = async (req,res,next)=>{
         const token = req.header('Authorization');
         console.log(token);
         // decrypt the token to find the particular user details encrypted...
-        const user = jwt.verify(token,'8884434443d@SecretKey');
+        const user = jwt.verify(token,process.env.TOKEN_SECRET);
         console.log('userID >>>>',user.userId);
         // find the data of the particular user stored using the decrypted userId...
         await User.findByPk(user.userId)

@@ -1,7 +1,7 @@
 const usersModel = require('../model/users');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-// const crypto = require('crypto');
+require('dotenv').config();
 
 exports.addUsers = async (req,res,next)=>{
     try{
@@ -52,9 +52,8 @@ exports.userLogin = async (req,res,next)=>{
                 // create payload for jwt...
                 const payload = {userId: existingUser.id,email: existingUser.email};
 
-                // create secret key for jet...
-                // const secretKey = crypto.randomBytes(32).toString('hex');
-                const secretKey = '8884434443d@SecretKey';
+                // create secret key for jwt...
+                const secretKey = process.env.TOKEN_SECRET;
 
                 // Generate token...
                 const token = jwt.sign(payload,secretKey);
@@ -73,6 +72,7 @@ exports.userLogin = async (req,res,next)=>{
     }
 } 
  
-  
+
+
  
 

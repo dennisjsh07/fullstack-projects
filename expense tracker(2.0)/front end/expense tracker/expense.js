@@ -1,6 +1,7 @@
 const form = document.querySelector('form');
 const msgDiv = document.getElementById('msg');
 const token = localStorage.getItem('token'); // getting the token stored in localstorage...
+const premiumMessage = document.getElementById('premiumMessage');
 
 form.addEventListener('submit',onsubmit);
 
@@ -95,7 +96,39 @@ function showInUi(data){
     }
 }
 
+const buyPremiumBtn = document.getElementById('rzp-btn');
+
+buyPremiumBtn.addEventListener('click',onClick);
+
+async function onClick(e){
+    try{
+        // (step-1) make a request to the backend and also specify the user and get the order id...
+        const response = await axios.get('http://localhost:3000/premium/premium-membership',{headers: {'Authorization': token}});
+        console.log(response);
+        var options = {
+            'key': response.data.key_id, // enter the keyId generated from backend...
+            'order_id': response.data.order.id, //enter the orderId generated from backend...
+            'handler' : async function(response) { // function to handle successfull payment...
+                await axios.post('http://localhost:3000/premium/update-status',{
+                    order_id: options.order_id,
+                    payment_id: response.razorpay_payment_id
+                },{headers: {'Authorization': token}})
+            }
+        }
+    } catch(err){
+        console.log(err);
+    }
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+    e.preventDefault();
+
+    rzp.on('payment.failed',function(response){
+        console.log(response);
+        alert('something went wrong');
+    })
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
     getRequest();
-})
-  
+});
