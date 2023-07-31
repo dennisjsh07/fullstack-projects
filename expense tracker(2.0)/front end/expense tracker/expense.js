@@ -112,7 +112,15 @@ async function onClick(e){
                 await axios.post('http://localhost:3000/premium/update-status',{
                     order_id: options.order_id,
                     payment_id: response.razorpay_payment_id
-                },{headers: {'Authorization': token}})
+                },{headers: {'Authorization': token}});
+
+                // Hide the Buy Premium button and show the Premium User text
+                buyPremiumBtn.style.display = 'none';
+                premiumMessage.style.display = 'block';
+                document.getElementById('leaderboard-btn').style.display = 'block';
+
+
+                localStorage.setItem('isPremiumUser','true');
             }
         }
     } catch(err){
@@ -131,4 +139,13 @@ async function onClick(e){
 
 document.addEventListener('DOMContentLoaded',()=>{
     getRequest();
+
+     // Check if the user is a Premium user from Local Storage and update the display
+     const isPremiumUser = localStorage.getItem('isPremiumUser');
+     if (isPremiumUser === 'true') {
+        buyPremiumBtn.style.display = 'none';
+        premiumMessage.style.display = 'block';
+        document.getElementById('leaderboard-btn').style.display = 'block';
+     }
 });
+ 
