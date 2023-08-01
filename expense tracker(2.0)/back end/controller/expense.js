@@ -1,7 +1,9 @@
 const expenseModel = require('../model/expense');
 const User = require('../model/users');
+const sequelize = require('../util/database');
 
 exports.addExpense = async (req,res,next)=>{
+    const t = await sequelize.transaction();
     try{
         // grab all the values....
         const {expenseAmt,expenseDescription,expenseCategory} = req.body;
@@ -12,27 +14,44 @@ exports.addExpense = async (req,res,next)=>{
         }
 
         // insert them inside...
-        await expenseModel.create({expenseAmt,expenseDescription,expenseCategory,userId: req.user.id});
+        const expense = await expenseModel.create({expenseAmt,expenseDescription,expenseCategory,userId: req.user.id}, {transaction: t});
         const totalExpense = Number(req.user.totalExpenses) + Number(expenseAmt)
-        console.log(totalExpense)
-        await User.update({totalExpenses: totalExpense}, {where: {id: req.user.id}})
-        res.status(201).json({message: 'expense added successfully'});
+        // console.log(totalExpense)
+        await User.update({totalExpenses: totalExpense}, {where: {id: req.user.id}, transaction: t});
+        // commit transaction...
+        await t.commit();
+        res.status(201).json({expense: expense});
     } catch(err){
-        console.log('add expense is failing',err)
+        console.log('add expense is failing',err);
+        // rollback transaction...
+        await t.rollback();
         res.status(500).json({error: err})
     }
 };
 
 exports.deleteExpense = async(req,res,next)=>{
+    const t = await sequelize.transaction();
     try{
         const Eid = req.params.id;
         if(Eid ==='undefined'){
             return res.status(400).json({error: 'id required to delete'});
         }
-        await expenseModel.destroy({where:{id:Eid, userId: req.user.id}});
+
+        // find the expense before deleting...
+        const expense = await expenseModel.findOne({where: {id: Eid, userId: req.user.id}});
+        if(!expense){
+            res.status(404).josn({err: 'expense not found'});
+        }
+        await expenseModel.destroy({where:{id:Eid, userId: req.user.id}, transaction: t});
+        const totalExpense = Number(req.user.totalExpenses) - Number(expense.expenseAmt)
+        console.log(totalExpense)
+        await User.update({totalExpenses: totalExpense}, {where: {id: req.user.id}}, {transaction: t});
+        // commit transaction...
+        await t.commit();
         res.sendStatus(200);
     } catch(err){
         console.log('delete expense is failing',err);
+        await t.rollback();
         res.status(500).json({err:err});
     }
 }
