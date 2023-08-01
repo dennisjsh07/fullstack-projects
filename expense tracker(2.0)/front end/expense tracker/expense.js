@@ -1,6 +1,5 @@
 const form = document.querySelector('form');
 const msgDiv = document.getElementById('msg');
-const token = localStorage.getItem('token'); // getting the token stored in localstorage...
 const premiumMessage = document.getElementById('premiumMessage');
 
 form.addEventListener('submit',onsubmit);
@@ -15,6 +14,7 @@ e.preventDefault();
     }
 
     try{
+        const token = localStorage.getItem('token'); // getting the token stored in localstorage...
         const response = await axios.post('http://localhost:3000/expense/add-expense',myObj,{headers: {'Authorization': token}});
         getRequest();
         console.log(response);
@@ -30,6 +30,7 @@ e.preventDefault();
 
 async function getRequest(){
     try{
+        const token = localStorage.getItem('token'); // getting the token stored in localstorage...
         const response = await axios.get('http://localhost:3000/expense/get-expense',{headers: {'Authorization': token}});
         const expense = response.data.allExpenses;
         console.log(response);
@@ -102,6 +103,7 @@ buyPremiumBtn.addEventListener('click',onClick);
 
 async function onClick(e){
     try{
+        const token = localStorage.getItem('token'); // getting the token stored in localstorage...
         // (step-1) make a request to the backend and also specify the user and get the order id...
         const response = await axios.get('http://localhost:3000/purchase/premium-membership',{headers: {'Authorization': token}});
         console.log(response);
@@ -109,7 +111,8 @@ async function onClick(e){
             'key': response.data.key_id, // enter the keyId generated from backend...
             'order_id': response.data.order.id, //enter the orderId generated from backend...
             'handler' : async function(response) { // function to handle successfull payment...
-                await axios.post('http://localhost:3000/purchase/update-status',{
+                const token = localStorage.getItem('token'); // getting the token stored in localstorage...
+                let res = await axios.post('http://localhost:3000/purchase/update-status',{
                     order_id: options.order_id,
                     payment_id: response.razorpay_payment_id
                 },{headers: {'Authorization': token}});
@@ -118,8 +121,8 @@ async function onClick(e){
                 buyPremiumBtn.style.display = 'none';
                 premiumMessage.style.display = 'block';
                 document.getElementById('leaderboard-btn').style.display = 'block';
-
                 localStorage.setItem('token',res.data.token);
+                console.log(res.data.token)
             }
         }
     } catch(err){
@@ -181,10 +184,11 @@ function parseJwt (token) {
 
 document.addEventListener('DOMContentLoaded',()=>{
     getRequest();
-   
+    const token = localStorage.getItem('token'); // getting the token stored in localstorage...
     const decodedToken = parseJwt(token);
     console.log(decodedToken);
-    const isAdmin = decodedToken.ispremiumuser
+    const isAdmin = decodedToken.ispremiumuser;
+    console.log(isAdmin);
      if (isAdmin) {
         buyPremiumBtn.style.display = 'none';
         premiumMessage.style.display = 'block';

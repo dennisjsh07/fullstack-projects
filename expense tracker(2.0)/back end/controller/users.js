@@ -82,6 +82,6 @@ exports.userLogin = async (req,res,next)=>{
     }
 } 
  
-
+module.exports.generateAccessToken = generateAccessToken
  
 
