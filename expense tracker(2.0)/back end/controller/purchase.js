@@ -1,5 +1,7 @@
 const Razorpay = require('razorpay');
 const Order = require('../model/orders');
+// const userController = require('../controller/users');
+
 
 exports.purchasePremium = async (req,res,next)=>{
     try{
@@ -29,13 +31,14 @@ exports.purchasePremium = async (req,res,next)=>{
 
 exports.updateTransactionStatus = async (req,res,next)=>{
     try{
+        const userId = req.user.id;
         const {payment_id, order_id} = req.body;
         const order = await Order.findOne({where : {orderid : order_id}});
         const promise1 =  order.update({paymentid: payment_id, status: 'SUCCESSFULL'})
         const promise2 =  req.user.update({ispremiumuser: true})
         Promise.all([promise1,promise2])
         .then(()=>{
-            return res.status(202).json({success: true, message: "Transaction Successfull"});
+            return res.status(202).json({success: true, message: "Transaction Successfull"});// fix the refresh bug...
         })
         .catch(err=>{
             throw new Error(err);
@@ -45,4 +48,4 @@ exports.updateTransactionStatus = async (req,res,next)=>{
         res.status(403).json({err: err});
     }
 }
-
+ 

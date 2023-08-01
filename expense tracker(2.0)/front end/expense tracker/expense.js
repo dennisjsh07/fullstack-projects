@@ -103,13 +103,13 @@ buyPremiumBtn.addEventListener('click',onClick);
 async function onClick(e){
     try{
         // (step-1) make a request to the backend and also specify the user and get the order id...
-        const response = await axios.get('http://localhost:3000/premium/premium-membership',{headers: {'Authorization': token}});
+        const response = await axios.get('http://localhost:3000/purchase/premium-membership',{headers: {'Authorization': token}});
         console.log(response);
         var options = {
             'key': response.data.key_id, // enter the keyId generated from backend...
             'order_id': response.data.order.id, //enter the orderId generated from backend...
             'handler' : async function(response) { // function to handle successfull payment...
-                await axios.post('http://localhost:3000/premium/update-status',{
+                await axios.post('http://localhost:3000/purchase/update-status',{
                     order_id: options.order_id,
                     payment_id: response.razorpay_payment_id
                 },{headers: {'Authorization': token}});
@@ -119,8 +119,7 @@ async function onClick(e){
                 premiumMessage.style.display = 'block';
                 document.getElementById('leaderboard-btn').style.display = 'block';
 
-
-                localStorage.setItem('isPremiumUser','true');
+                localStorage.setItem('token',res.data.token);
             }
         }
     } catch(err){
@@ -137,12 +136,56 @@ async function onClick(e){
     })
 }
 
+const leaderboardBtn = document.getElementById('leaderboard-btn');
+
+leaderboardBtn.addEventListener('click',onClick);
+
+async function onClick(e){
+    try{
+        const leaderBoardArray = await axios.get('http://localhost:3000/premium/showLeaderBoard',{headers: {'Authorization': token}});
+        console.log(leaderBoardArray);
+
+        var leaderboardTable = document.getElementById('leaderboard-table');
+        var leaderboardTBody = document.getElementById('leaderboard-tbody');
+
+        // clear the previous data from the tbody...
+        leaderboardTBody.innerHTML = '';
+
+        leaderBoardArray.data.forEach((userDetails)=>{
+            // create a row for each user in the leaderboard table...
+            var newRow = leaderboardTBody.insertRow();
+            var nameCell = newRow.insertCell(0);
+            var totalExpenseCell = newRow.insertCell(1);
+
+            // populate it with the user details...
+            nameCell.textContent = userDetails.name;
+            totalExpenseCell.textContent = userDetails.total_cost;
+        });
+        // show the leaderBoard....
+        leaderboardTable.style.display = 'block';
+
+    } catch(err){
+        console.log(err);
+    }
+}
+
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
     getRequest();
-
-     // Check if the user is a Premium user from Local Storage and update the display
-     const isPremiumUser = localStorage.getItem('isPremiumUser');
-     if (isPremiumUser === 'true') {
+   
+    const decodedToken = parseJwt(token);
+    console.log(decodedToken);
+    const isAdmin = decodedToken.ispremiumuser
+     if (isAdmin) {
         buyPremiumBtn.style.display = 'none';
         premiumMessage.style.display = 'block';
         document.getElementById('leaderboard-btn').style.display = 'block';

@@ -1,7 +1,7 @@
 const usersModel = require('../model/users');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
+// require('dotenv').config();
 
 exports.addUsers = async (req,res,next)=>{
     try{
@@ -34,6 +34,16 @@ exports.addUsers = async (req,res,next)=>{
     }
 };
 
+const generateAccessToken = (id,email,ispremiumuser)=>{
+    const payload = {
+        userId: id,
+        email: email,
+        ispremiumuser: ispremiumuser
+    }
+    const secretKey = process.env.TOKEN_SECRET;
+    return jwt.sign(payload,secretKey);
+}
+
 exports.userLogin = async (req,res,next)=>{
     try{
         const {email, password} = req.body;
@@ -50,14 +60,14 @@ exports.userLogin = async (req,res,next)=>{
             const isPasswordMatch = await bcrypt.compare(password,existingUser.password);
             if(isPasswordMatch){
                 // create payload for jwt...
-                const payload = {userId: existingUser.id,email: existingUser.email};
+                // const payload = {userId: existingUser.id, email: existingUser.email};
 
                 // create secret key for jwt...
-                const secretKey = process.env.TOKEN_SECRET;
+                // const secretKey = process.env.TOKEN_SECRET;
 
                 // Generate token...
-                const token = jwt.sign(payload,secretKey);
-                res.status(200).json({message: 'User logged in successfully',token});
+                // const token = jwt.sign(payload,secretKey);
+                res.status(200).json({message: 'User logged in successfully',token: generateAccessToken(existingUser.id, existingUser.email, existingUser.ispremiumuser)});
             }
             else{
                 res.status(401).json({error: 'Email and Password are not matching'});
@@ -72,7 +82,6 @@ exports.userLogin = async (req,res,next)=>{
     }
 } 
  
-
 
  
 
