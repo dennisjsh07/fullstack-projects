@@ -138,9 +138,9 @@ async function onClick(e){
 
 const leaderboardBtn = document.getElementById('leaderboard-btn');
 
-leaderboardBtn.addEventListener('click',onClick);
+leaderboardBtn.addEventListener('click',onLeadClick);
 
-async function onClick(e){
+async function onLeadClick(e){
     try{
         const leaderBoardArray = await axios.get('http://localhost:3000/premium/showLeaderBoard',{headers: {'Authorization': token}});
         console.log(leaderBoardArray);
@@ -159,7 +159,7 @@ async function onClick(e){
 
             // populate it with the user details...
             nameCell.textContent = userDetails.name;
-            totalExpenseCell.textContent = userDetails.total_cost;
+            totalExpenseCell.textContent = userDetails.totalExpenses;
         });
         // show the leaderBoard....
         leaderboardTable.style.display = 'block';

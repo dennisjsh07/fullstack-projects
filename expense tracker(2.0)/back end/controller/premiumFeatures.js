@@ -74,24 +74,43 @@
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-// optimised code - 2 (MAKING A SINGLE QUERY)...
+// // optimised code - 2 (MAKING A SINGLE QUERY)...
+// const User = require('../model/users');
+// const Expense = require('../model/expense');
+// const sequelize = require('../util/database');
+
+// exports.getUserLeaderBoard = async (req,res,next)=>{
+//     try{
+//         // get only the required attributes from users and expenses...
+//         const leaderboardOfUsers = await User.findAll({
+//             attributes:  ['id', 'name', [sequelize.fn('sum', sequelize.col('expenseAmt')), 'total_cost']],
+//             include: [
+//                 {
+//                     model: Expense,
+//                     attributes: []
+//                 }
+//             ],
+//             group: ['id'],
+//             order: [['total_cost','DESC']]
+//         });
+//         res.status(200).json(leaderboardOfUsers);
+//     } catch(err){
+//         console.log('getUserLeaderBoard is failing',err);
+//         res.status(500).json({err: err});
+//     }
+// };
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+// optimised code - 3 (directly using totalExpenses from the table)...
 const User = require('../model/users');
-const Expense = require('../model/expense');
-const sequelize = require('../util/database');
 
 exports.getUserLeaderBoard = async (req,res,next)=>{
     try{
         // get only the required attributes from users and expenses...
         const leaderboardOfUsers = await User.findAll({
-            attributes:  ['id', 'name', [sequelize.fn('sum', sequelize.col('expenseAmt')), 'total_cost']],
-            include: [
-                {
-                    model: Expense,
-                    attributes: []
-                }
-            ],
-            group: ['id'],
-            order: [['total_cost','DESC']]
+            order: [['totalExpenses','DESC']]
         });
         res.status(200).json(leaderboardOfUsers);
     } catch(err){

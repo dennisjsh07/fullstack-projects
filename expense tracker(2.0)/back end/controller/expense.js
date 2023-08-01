@@ -1,4 +1,5 @@
 const expenseModel = require('../model/expense');
+const User = require('../model/users');
 
 exports.addExpense = async (req,res,next)=>{
     try{
@@ -12,6 +13,9 @@ exports.addExpense = async (req,res,next)=>{
 
         // insert them inside...
         await expenseModel.create({expenseAmt,expenseDescription,expenseCategory,userId: req.user.id});
+        const totalExpense = Number(req.user.totalExpenses) + Number(expenseAmt)
+        console.log(totalExpense)
+        await User.update({totalExpenses: totalExpense}, {where: {id: req.user.id}})
         res.status(201).json({message: 'expense added successfully'});
     } catch(err){
         console.log('add expense is failing',err)
