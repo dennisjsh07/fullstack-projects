@@ -33,12 +33,20 @@ exports.forgotPassword = async(req,res,next)=>{
                 text: 'and easy to do anywhere, even with Node.js',
                 html: `<a href="http://localhost:3000/password/reset-password/${id}">Reset password</a>`, 
             }
-            try{
-                await sgMail.send(msg)
-            return res.status(response[0].statusCode).json({message: 'Link to reset password sent to your mail ', sucess: true})
-            } catch(err){
-                throw new Error(err);
-            }  
+            sgMail
+            .send(msg)
+            .then((response) => {
+
+                // console.log(response[0].statusCode)
+                // console.log(response[0].headers)
+                return res.status(response[0].statusCode).json({message: 'Link to reset password sent to your mail ', sucess: true})
+
+            })
+            .catch((error) => {
+                throw new Error(error);
+            })
+
+            //send mail
         }
         else{
             throw new Error('user doesnot exist')

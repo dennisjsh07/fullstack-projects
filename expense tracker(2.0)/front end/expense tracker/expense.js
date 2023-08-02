@@ -174,6 +174,140 @@ async function onLeadClick(e){
     }
 }
 
+// generating daily reports...
+const generateReportBtn = document.getElementById('generateReport');
+const dailyExpensesTable = document.getElementById('dailyExpenses-table');
+
+generateReportBtn.addEventListener('click', generateDailyReport);
+
+async function generateDailyReport() {
+    try {
+        const token = localStorage.getItem('token');
+        const startDate = formatDate(new Date(startDateInput.value));
+        const endDate = formatDate(new Date(endDateInput.value));
+        const response = await axios.get('http://localhost:3000/premium/generate-report/daily', {
+            headers: { 'Authorization': token },
+            params: { startDate, endDate }
+        });
+        const expensesTBody = dailyExpensesTable.querySelector('tbody');
+        displayReport(expensesTBody, response.data);
+
+        // Calculate total expense
+        const totalExpense = response.data.reduce((sum, expense) => sum + expense.expenseAmt, 0);
+
+        // Create a new row for displaying total expense
+        const totalExpenseRow = document.createElement('tr');
+        const totalExpenseCell = document.createElement('td');
+        totalExpenseCell.colSpan = 3; // Span across the columns
+        totalExpenseCell.textContent = `Total Expense: ${totalExpense}`;
+        totalExpenseRow.appendChild(totalExpenseCell);
+        expensesTBody.appendChild(totalExpenseRow);
+    } catch (err) {
+        console.log(err);
+    }
+    // making the download button visible...
+    downloadBtn.style.display = 'block';
+}
+
+// generating monthly reports...
+
+const generateMonthReportBtn = document.getElementById('generateMonthReport');
+const monthlyExpensesTable = document.getElementById('monthlyExpenses-table');
+
+generateMonthReportBtn.addEventListener('click', generateMonthlyReport);
+
+async function generateMonthlyReport() {
+    try {
+        const token = localStorage.getItem('token');
+        const reportMonth = formatDate(new Date(reportMonthInput.value));
+        const response = await axios.get('http://localhost:3000/premium/generate-report/monthly', {
+            headers: { 'Authorization': token },
+            params: { reportMonth }
+        });
+        const expensesTBody = monthlyExpensesTable.querySelector('tbody');
+        displayReport(expensesTBody, response.data);
+
+        // Calculate total expense
+        const totalExpense = response.data.reduce((sum, expense) => sum + expense.expenseAmt, 0);
+
+        // Create a new row for displaying total expense
+        const totalExpenseRow = document.createElement('tr');
+        const totalExpenseCell = document.createElement('td');
+        totalExpenseCell.colSpan = 3; // Span across the columns
+        totalExpenseCell.textContent = `Total Expense: ${totalExpense}`;
+        totalExpenseRow.appendChild(totalExpenseCell);
+        expensesTBody.appendChild(totalExpenseRow);
+    } catch (err) {
+        console.log(err);
+    }
+     // making the download button visible...
+     downloadBtn.style.display = 'block';
+}
+
+// yearly reports...
+
+const generateYearReportBtn = document.getElementById('generateYearReport');
+const yearlyExpensesTable = document.getElementById('yearlyExpenses-table');
+
+generateYearReportBtn.addEventListener('click', generateYearlyReport);
+
+async function generateYearlyReport() {
+    try {
+        const token = localStorage.getItem('token');
+        const reportYear = Number(reportYearInput.value);
+        const response = await axios.get('http://localhost:3000/premium/generate-report/yearly', {
+            headers: { 'Authorization': token },
+            params: { reportYear }
+        });
+        const expensesTBody = yearlyExpensesTable.querySelector('tbody');
+        displayYearlyReport(expensesTBody, response.data);
+
+        // Calculate total expenses for each month
+        const totalExpensesPerMonth = Array(12).fill(0);
+        response.data.forEach(expense => {
+            const month = new Date(expense.date).getMonth();
+            totalExpensesPerMonth[month] += expense.expenseAmt;
+        });
+
+        // Create rows for each month's total expense
+        for (let month = 0; month < totalExpensesPerMonth.length; month++) {
+            const monthName = new Date(2023, month).toLocaleString('default', { month: 'long' });
+            const totalExpenseRow = document.createElement('tr');
+            const monthCell = document.createElement('td');
+            monthCell.textContent = monthName;
+            const totalExpenseCell = document.createElement('td');
+            totalExpenseCell.textContent = totalExpensesPerMonth[month];
+            totalExpenseRow.appendChild(monthCell);
+            totalExpenseRow.appendChild(totalExpenseCell);
+            expensesTBody.appendChild(totalExpenseRow);
+        }
+    } catch (err) {
+        console.log(err);
+    }
+     // making the download button visible...
+     downloadBtn.style.display = 'block';
+}
+
+const downloadBtn = document.getElementById('downloadReport');
+
+downloadBtn.addEventListener('click',onClick);
+
+async function onClick(e){
+    try{
+        const response = await axios.get('',{ headers: {"Authorization" : token} });
+        if(response.status === 201){
+            // getting the download link from the backend...
+            // which when opened will download theh file...
+            var a = document.createElement('a');
+            a.href = response.data.fileUrl;
+            a.download = 'myexpense.csv';
+            a.click();
+        }
+    } catch(err){
+        throw new Error(err);
+    }
+}
+
 function parseJwt (token) {
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
