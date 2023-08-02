@@ -87,6 +87,7 @@ function showInUi(data){
 
     async function onDeleteClick(e){
         try{
+            const token = localStorage.getItem('token'); // getting the token stored in localstorage...
             const userId = data.id;
             const response = await axios.delete(`http://localhost:3000/expense/delete-expense/${userId}`, {headers: {'Authorization': token}});
             getRequest();
@@ -145,6 +146,7 @@ leaderboardBtn.addEventListener('click',onLeadClick);
 
 async function onLeadClick(e){
     try{
+        const token = localStorage.getItem('token'); // getting the token stored in localstorage...
         const leaderBoardArray = await axios.get('http://localhost:3000/premium/showLeaderBoard',{headers: {'Authorization': token}});
         console.log(leaderBoardArray);
 

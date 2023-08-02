@@ -59,14 +59,6 @@ exports.userLogin = async (req,res,next)=>{
             // console.log('existing user details: ',existingUser);
             const isPasswordMatch = await bcrypt.compare(password,existingUser.password);
             if(isPasswordMatch){
-                // create payload for jwt...
-                // const payload = {userId: existingUser.id, email: existingUser.email};
-
-                // create secret key for jwt...
-                // const secretKey = process.env.TOKEN_SECRET;
-
-                // Generate token...
-                // const token = jwt.sign(payload,secretKey);
                 res.status(200).json({message: 'User logged in successfully',token: generateAccessToken(existingUser.id, existingUser.email, existingUser.ispremiumuser)});
             }
             else{
@@ -82,6 +74,6 @@ exports.userLogin = async (req,res,next)=>{
     }
 } 
  
-module.exports.generateAccessToken = generateAccessToken
+module.exports.generateAccessToken = generateAccessToken;
  
 
