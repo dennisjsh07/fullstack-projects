@@ -13,3 +13,4 @@ const ForgotPassword = sequelize.define('forgotPassword',{
 })
 
 module.exports = ForgotPassword;
+ 

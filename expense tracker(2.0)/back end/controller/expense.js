@@ -58,9 +58,20 @@ exports.deleteExpense = async(req,res,next)=>{
 
 exports.getExpense = async(req,res,next)=>{
     try{
-        // const expenses = await expenseModel.findAll();
-        const expenses = await expenseModel.findAll({where: {userId: req.user.id}});
-        res.status(200).json({allExpenses: expenses})
+        const page = req.query.page || 1;
+        const perPage = 5; // Number of expenses per page
+        const offset = (page - 1) * perPage;
+
+        const expenses = await expenseModel.findAll({
+            where: {userId: req.user.id},
+            limit: perPage,
+            offset: offset
+        });
+
+        const totalExpenses = await expenseModel.count({ where: { userId: req.user.id } });
+        const totalPages = Math.ceil(totalExpenses / perPage);
+
+        res.status(200).json({allExpenses: expenses, totalPages: totalPages })
     } catch(err){
         console.log('get expense is failing');
         res.status(500).json({err:err});

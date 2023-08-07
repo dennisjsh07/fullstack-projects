@@ -1,8 +1,6 @@
 const Razorpay = require('razorpay');
 const Order = require('../model/orders');
 const userController = require('../controller/users');
-// const User = require('../model/users');
-
 
 exports.purchasePremium = async (req,res,next)=>{
     try{
@@ -38,11 +36,11 @@ exports.updateTransactionStatus = async (req,res,next)=>{
         const promise1 =  order.update({paymentid: payment_id, status: 'SUCCESSFULL'})
         const promise2 =  req.user.update({ispremiumuser: true})
         await Promise.all([promise1,promise2])
-        // const updatedUser = await User.findByPk(userId)
         return res.status(202).json({success: true, message: "Transaction Successfull", token: userController.generateAccessToken(userId, undefined, true)});// fix the refresh bug...
     } catch(err){
         console.log('update transaction status is failing',err);
         res.status(403).json({err: err});
     }
 }
+ 
  
