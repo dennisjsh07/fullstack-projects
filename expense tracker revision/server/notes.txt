@@ -1,0 +1,34 @@
+=> Buy premium membership...
+
+1. call the rzp backend from our backend...
+2. create a order in the backend...
+
+
+
+// notes...
+// iterating the objects in the array.
+// const expense = [
+//     {
+//       id:1,
+//       expense:300
+//     },
+//     {
+//       id:2,
+//       expense:200
+//     },
+//     {
+//       id:1,
+//       expense:100
+//     }
+//     ]
+    
+//     const aggregatedExpense = {}
+//     expense.forEach((item)=>{
+//       if(aggregatedExpense[item.id]){
+//         aggregatedExpense[item.id] = aggregatedExpense[item.id] + item.expense
+//       } else{
+//         aggregatedExpense[item.id] = item.expense
+//       }
+//     });
+    
+//     console.log(aggregatedExpense);
