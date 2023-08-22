@@ -9,7 +9,7 @@ exports.addUser = async (req, res, next)=>{
 
         // validation...
         if(!name || !phone || !email || !password){
-            return res.status(400).json({err: 'enter all the fields'})
+            return res.status(400).json({message: 'enter all the fields'})
         }
 
         // add error if user already exists...
@@ -20,15 +20,16 @@ exports.addUser = async (req, res, next)=>{
             ]}
         });
         if(existingUser){
-            return res.status(400).json({err: 'user already exists'});
+            return res.status(400).json({error: 'user already exists'});
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const response = await User.create({name, phone, email, password: hashedPassword});
-        res.status(201).json({newUserDetails: response});
+        res.status(201).json({message: 'user addded in successfully', newUserDetails: response});
 
     } catch(err){
         console.log('adding user failed >>>>', err);
         res.status(500).json({err: err});
     }
 }
+ 
