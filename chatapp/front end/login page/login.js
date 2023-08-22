@@ -11,6 +11,7 @@ async function onSubmit(e){
     }
 
     try{
+<<<<<<< HEAD:chatapp/front end/login page/login.js
         const response = await axios.post('http://localhost:4000/user/login', myObj);
         console.log(response.data);
 
@@ -21,7 +22,19 @@ async function onSubmit(e){
 
     } catch(err){
         console.log(err)
+=======
+        const response = await axios.post('http://localhost:4000/add-user',myObj);
+        console.log(response.data.newUserDetails);
+        alert(response.data.message);
+    } catch(err){
+        if(err.response && err.response.data.error === 'user already exists'){
+            alert(err.response.data.error)
+        } else{
+            console.log(err);
+        }
+>>>>>>> af608fb3bba802be141da86fe08adba44e820ada:chatapp/front end/signUp.js
     }
 
     form.reset();
 }
+ 
