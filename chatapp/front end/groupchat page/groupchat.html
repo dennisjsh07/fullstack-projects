@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script> 
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .message-container {
+            margin-bottom: 10px;
+        }
+
+        .message {
+            background-color: #f2f2f2;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .input-field {
+            flex: 1;
+            margin-right: 10px;
+            height:25px;
+        }
+
+        .send-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            
+        }
+        .hearder {
+           padding:10px;
+           background-color: black;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="hearder">
+        <button id="btn-1" onclick="redirectSignup()" type="submit" class="btn btn-success btn-lg">signup</button>
+        <button id="btn-2" onclick="redirectlogin()" type="submit" class="btn btn-success btn-lg">login</button>
+        <h4 style="color: gold;text-align: center;" id="groupname"></h4>
+        <button style="float: right;margin-top: -80px;" id="addmember" onclick="redirectaddmembers()" type="submit" class="btn btn-success btn-lg">Add Members</button>
+
+
+        </div>
+
+
+        <div class="user-groups">
+            <div style="margin-top: 20px;text-align: center;float: left;margin-left: 20px" id="makeadmine" class="user-group">
+                <lable class="form-lable" for="admine">Email address To make group admin</lable>
+                <input class="form-control" type="email" id="admine" required>
+                <div class="invalid-feedback">
+                    Please enter your email <address></address>
+                </div>
+              <button class="btn btn-primary" onclick="makeAdmine(event)">Make admine</button>
+            </div>
+            </div>
+            <div class="user-groups">
+                <div style="margin-top: 20px;text-align: center;float: left;" id="showUsers" class="user-group">
+                    <h3 style="margin-top: 140px;margin-left: -300px;" id="showuser">show user</h3>
+                    <ul style="margin-left: -400px;" id="showing">
+                    
+                    </ul>
+                </div>
+            </div>
+
+        
+    <h1 style="text-align: center;margin-right: 180px;" >Chat Here</h1>
+    <div class="container">
+        <section class="section-1">
+
+            <ul class="list-group gap-2" id="ul-list">
+                <!-- <li class="list-group-item">An item</li>
+                <li class="list-group-item">A second item</li>
+                <li class="list-group-item">A third item</li>
+                <li class="list-group-item">A fourth item</li>
+                <li class="list-group-item">And a fifth one</li> -->
+            </ul>
+
+        </section>
+        <div class="input-container">
+            <input style="height:40px; border-radius: 15px;" id="msg-bar" class="input-field" type="text" placeholder="Type your message" required>
+            <button onclick="sendMessage(event)" class="send-button">Send</button>
+        </div>
+    </div>
+    <script src="groupchat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
+</body>
+</html>

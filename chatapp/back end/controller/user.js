@@ -4,7 +4,7 @@ const { Op } = require('sequelize');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-function generateAccessToken(){
+function generateAccessToken(id, email){
     payload = {
         userId: id,
         email: email
