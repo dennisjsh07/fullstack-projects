@@ -36,18 +36,13 @@ exports.addUser = async (req, res, next)=>{
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const response = await User.create({name, phone, email, password: hashedPassword});
-<<<<<<< HEAD
         res.status(201).json({message: 'user added in successfully', newUserDetails: response});
-=======
-        res.status(201).json({message: 'user addded in successfully', newUserDetails: response});
->>>>>>> af608fb3bba802be141da86fe08adba44e820ada
 
     } catch(err){
         console.log('adding user failed >>>>', err);
         res.status(500).json({err: err});
     }
 }
-<<<<<<< HEAD
 
 exports.userLogin = async(req,res,next)=>{
     try{
@@ -77,6 +72,4 @@ exports.userLogin = async(req,res,next)=>{
 }
 
 module.exports.generateAccessToken = generateAccessToken;
-=======
->>>>>>> af608fb3bba802be141da86fe08adba44e820ada
  

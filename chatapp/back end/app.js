@@ -14,11 +14,7 @@ const app = express();
 app.use(cors({
     origin: "*",
     credentials: true,
-<<<<<<< HEAD
     methods: "GET, POST, PUT, DELETE"
-=======
-    methods: ['GET', 'POST', 'PUT', 'DELETE']
->>>>>>> af608fb3bba802be141da86fe08adba44e820ada
 }));
 
 app.use(bodyParser.json());
