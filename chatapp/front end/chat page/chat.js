@@ -55,6 +55,10 @@ async function displayAllMessages() {
     }
 }
 
+// Set interval to refresh messages every second
+const intervalId = setInterval(displayAllMessages, 1000);
+
+
 function parseJwt (token) {
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
