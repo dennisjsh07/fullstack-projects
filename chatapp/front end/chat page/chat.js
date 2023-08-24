@@ -30,21 +30,28 @@ async function displayAllMessages() {
 
         const messages = response.data.allChats;
         console.log('messages>>>>', messages);
+        
+        localStorage.setItem('messages', JSON.stringify(messages));
+
+        const lsMessage = JSON.parse(localStorage.getItem('messages')); // Parse the JSON string back to an object
+        console.log('lsMessage>>>>', lsMessage);
 
         chatBox.innerHTML = ''; // Clear existing messages
 
-        messages.forEach(message => {
+        // display messages from the local storage...
+        lsMessage.forEach(message => {
             const messageElement = document.createElement('div');
             messageElement.textContent = `${message.name}: ${message.message}`;
             
             if (message.userId === myUserId) {
                 // Message is outgoing, add to alert-success
                 messageElement.classList.add('alert', 'alert-success', 'mb-3');
+                messageElement.style.textAlign = 'right';
             } else {
                 // Message is received, add to alert-secondary
                 messageElement.classList.add('alert', 'alert-secondary', 'mb-3');
             }
-            
+
             chatBox.appendChild(messageElement);
         });
 
@@ -55,9 +62,8 @@ async function displayAllMessages() {
     }
 }
 
-// Set interval to refresh messages every second
-const intervalId = setInterval(displayAllMessages, 1000);
-
+// Set interval to refresh messages every second...
+// const intervalId = setInterval(displayAllMessages, 1000);
 
 function parseJwt (token) {
     var base64Url = token.split('.')[1];

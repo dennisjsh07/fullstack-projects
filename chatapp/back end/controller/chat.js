@@ -1,4 +1,5 @@
 const Chat = require('../model/chat');
+const { Op } = require('sequelize');
 
 exports.addNewChat = async(req,res,next)=>{
     try{
@@ -12,10 +13,10 @@ exports.addNewChat = async(req,res,next)=>{
         res.status(201).json({message: 'message added'})
     }
 }
- 
 
 exports.getAllChat = async (req, res, next)=>{
     try{
+
         const getChat = await Chat.findAll();
         // console.log('getChat >>>', getChat);
         res.status(200).json({allChats: getChat});
@@ -24,4 +25,6 @@ exports.getAllChat = async (req, res, next)=>{
         res.status(500).json({err: err});
     }
 }
+
+ 
  
