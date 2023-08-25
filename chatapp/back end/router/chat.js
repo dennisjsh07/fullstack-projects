@@ -8,5 +8,15 @@ router.post('/send-message', userAuthentication.authenticate, chatController.add
 
 router.get('/get-message', userAuthentication.authenticate, chatController.getAllChat);
 
+router.post('/addUserToGroup', userAuthentication.authenticate, chatController.addUserToGroup);
+
+router.get('/getUsersofGroup', chatController.getUsersofGroup);
+
+router.put('/makenewAdmin', userAuthentication.authenticate, chatController.makenewAdmin);
+
+router.delete('/deleteUserFromGroup', userAuthentication.authenticate, chatController.deleteUserFromGroup);
+
 module.exports = router;
+
  
+

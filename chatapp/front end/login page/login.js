@@ -18,7 +18,7 @@ async function onSubmit(e){
         localStorage.setItem('token',response.data.token);
 
         // redirect...
-        window.location.href = 'http://127.0.0.1:5500/chat%20page/chat.html';
+        window.location.href = 'http://127.0.0.1:5500/allGroups%20page/allgroups.html';
 
     } catch(err){
         console.log(err)

@@ -1,12 +1,126 @@
 const Chat = require('../model/chat');
-const { Op } = require('sequelize');
+const User = require('../model/user');
+const Group = require('../model/group');
+const UserGroup = require('../model/usergroup');
+
+exports.addUserToGroup = async(req, res, next)=>{
+    try{
+        // console.log('req.body>>>>', req.body);
+        const {newUser, groupName} = req.body
+
+        // validate...
+        if(!newUser){
+            return res.status(400).json({err: 'please enter all the fields'});
+        }
+
+        // find if the user is present in the database...
+        const existingUser = await User.findOne({where:{name: newUser}});
+        if(!existingUser){
+            return res.status(404).json({response: 'user not found'})
+        }
+        // console.log('existingUser>>>>', existingUser);
+
+        // find if the group is present in group table...
+        const existingGroup = await Group.findOne({where: {groupName}});
+        if(!existingGroup){
+            return res.status(404).json({response: 'group not found'});
+        }
+        // console.log('existingGroup>>>>', existingGroup);
+
+        // restrict from adding the same users multiple times to the same group...
+        if(existingGroup.userId === existingUser.id){
+            return res.status(400).json({err: 'user already exists in group'});
+            
+        }
+
+        const addNewUsers = await UserGroup.create({groupname: groupName, name: existingUser.name, groupId: existingGroup.id, userId: existingUser.id});
+        res.status(201).json(addNewUsers);
+
+    } catch(err){
+        console.log('addUserToGroup failed>>>>', err);
+        res.status(500).json({err: err});
+    }
+}
+
+exports.getUsersofGroup = async(req, res, next)=>{
+    try{
+        const { groupName } = req.query;
+        console.log('groupName>>>>', groupName);
+
+        // find the existing group from the query params...
+        const existingGroup = await UserGroup.findOne({where: {groupName}});
+
+        if(!existingGroup){
+            return res.status(404).json({err: 'group not found'});
+        }
+        // console.log('existingGroup>>>>', existingGroup);
+        const getallusersofgroup = await UserGroup.findAll({
+            where: {groupId: existingGroup.groupId},
+            attributes: ['name', 'groupId']
+        });
+        res.status(200).json(getallusersofgroup);
+    } catch(err){
+        console.log('getUsersofGroup>>>>', err);
+        res.status(500).json({err: err});
+    }
+}
+
+exports.makenewAdmin = async(req, res, next)=>{
+    try{
+        const {groupName} = req.query;
+        // console.log('groupName>>>>', groupName);
+        
+        // console.log(req.body);
+        const {makeNewAdmin} = req.body;
+
+        // Find the current user's details
+        const currentUserId = req.user.id;
+        const currentUserDetails = await UserGroup.findOne({
+            where: { userId: currentUserId, groupname: groupName }
+        });
+        console.log('currentUserDetails>>>>', currentUserDetails);
+
+        // Check if the current user is an admin...
+        if (!currentUserDetails || !currentUserDetails.isAdmine) {
+            return res.status(403).json({ error: 'You are not authorized to make new admin.' });
+        }
+
+        // Find the new user is present in database...
+        const newUserDetails = await User.findOne({
+            where: { name: makeNewAdmin }
+        });
+
+        if (!newUserDetails) {
+            return res.status(404).json({ error: 'New user not found.' });
+        }
+
+        // Update the new user's admin status
+        await UserGroup.update(
+            { isAdmine: true },
+            { where: { userId: newUserDetails.id, groupname: groupName } }
+        );
+
+        res.status(200).json({ success: true });
+
+    } catch(err){
+        console.log('makenewAdmin is failing>>>>', err);
+        res.status(500).json({ err: err });
+    }
+}
 
 exports.addNewChat = async(req,res,next)=>{
     try{
         // console.log(req.body);
         const {message} = req.body;
 
-        const addMessage = await Chat.create({message, name: req.user.name, userId: req.user.id});
+        const {groupName} = req.query;
+        // console.log('groupName>>>>',groupName);
+
+        // find the groupId...
+        const existingGroup = await UserGroup.findOne({where: {groupName}});
+        // console.log('existingGroup>>>>', existingGroup.groupId);
+
+        const addMessage = await Chat.create({message, name: req.user.name, userId: req.user.id, groupId: existingGroup.groupId});
         res.status(201).json({newMessage: addMessage});
     } catch(err){
         console.log('adding new messsages failed>>>>', err);
@@ -14,10 +128,43 @@ exports.addNewChat = async(req,res,next)=>{
     }
 }
 
+exports.deleteUserFromGroup = async (req, res, next) => {
+    try {
+        const { groupName, userId } = req.query;
+
+        // Check if the current user is the admin of the group
+        const currentUserGroup = await UserGroup.findOne({
+            where: { groupId: groupName, userId: req.user.id, isAdmine: true }
+        });
+
+        if (!currentUserGroup) {
+            return res.status(403).json({ message: 'You do not have permission to perform this action.' });
+        }
+
+        // Delete the user from the group
+        await UserGroup.destroy({
+            where: { groupId: groupName, userId }
+        });
+
+        res.status(200).json({ message: 'User deleted from the group successfully.' });
+    } catch (err) {
+        console.log('deleteUserFromGroup failed>>>>', err);
+        res.status(500).json({ err: err });
+    }
+};
+
 exports.getAllChat = async (req, res, next)=>{
     try{
+        const { groupName } = req.query;
+        // console.log('groupName>>>>',groupName);
 
-        const getChat = await Chat.findAll();
+        // find the groupId...
+        const existingGroup = await UserGroup.findOne({where: {groupName}});
+        // console.log('existingGroup>>>>', existingGroup.groupId);
+
+        const getChat = await Chat.findAll({
+            where: {groupId: existingGroup.groupId}
+        });
         // console.log('getChat >>>', getChat);
         res.status(200).json({allChats: getChat});
     } catch(err){
@@ -25,6 +172,6 @@ exports.getAllChat = async (req, res, next)=>{
         res.status(500).json({err: err});
     }
 }
-
+ 
  
  
