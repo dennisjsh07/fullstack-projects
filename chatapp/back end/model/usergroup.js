@@ -17,8 +17,7 @@ const Usergroup= sequelize.define('usergroup',{
         allowNull: false,
         defaultValue: false
     }
-    
-
 })
 
 module.exports = Usergroup;
+ 

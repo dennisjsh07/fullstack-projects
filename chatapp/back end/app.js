@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const sequelize = require('./util/database');
+const http = require('http'); // for sockets...
 
 const userRouter = require('./router/user');
 const chatRouter = require('./router/chat');
@@ -16,11 +17,18 @@ const UserGroup = require('./model/usergroup');
 
 const app = express();
 
-app.use(cors({
-    origin: "*",
-    credentials: true,
-    methods: "GET, POST, PUT, DELETE"
-}));
+app.use(cors())
+
+const server = http.createServer(app); // for sockets...
+const { Server } = require("socket.io");
+const io = new Server(server, {
+    cors: {
+        origin: "*",
+        methods: ['GET', 'POST'],
+        allowedHeaders: ["my-custom-header"],
+        credentials: true,
+    }
+});
 
 app.use(bodyParser.json());
 
@@ -39,13 +47,28 @@ User.belongsToMany(Group , {through : UserGroup});
 Group.hasMany(Chat);
 Chat.belongsTo(Group);
 
+io.on('connection', (socket)=>{
+    console.log('socket.id >>>>', socket.id);
+    socket.on('send-message', (message)=>{
+            socket.broadcast.emit('receive-message', message);
+        console.log(message);
+    })
+    socket.on('join-room', (option)=>{
+        socket.join(option);
+    })
+});
+
 sequelize
 // .sync({force: true})
 .sync()
 .then(()=>{
     console.log('tabels created');
-    app.listen(4000);
+    server.listen(4000, ()=>{
+        console.log('server is running on port 4000');
+    }); // change app to server for sockets...
 })
 .catch(err=> console.log(err));
+
+
  
  

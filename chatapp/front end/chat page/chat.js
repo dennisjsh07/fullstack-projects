@@ -1,3 +1,13 @@
+// import sockets...
+// const socket = io('http://localhost:4000'); // create instance...
+
+socket.on('connect', ()=>{
+    console.log('you connected with id >>>>', socket.id);
+})
+
+// send events from client to server...
+// socket.emit('custom-event', 10, 'hi', { a: 'aa'});
+
 // adding users to the group..........................................
 const addNewUsers = document.getElementById('addNewUsers');
 // console.log('addNewUsers>>>>', addNewUsers);
@@ -69,8 +79,10 @@ ul.addEventListener('click', async (event) => {
         const groupName = localStorage.getItem('groupName');
 
         try {
+            const token = localStorage.getItem('token');
             const response = await axios.delete('http://localhost:4000/chat/deleteUserFromGroup', {
-                params: { groupName, userId: userName }
+                params: { groupName, userId: userName },
+                headers: {'Authorization': token}
             });
 
             if (response.status === 200) {
@@ -122,7 +134,8 @@ async function onSubmit(e) {
     e.preventDefault();
 
     const message = document.getElementById('textInput').value;
-    
+    socket.emit('send-message', message); // sending message to backend...
+
     try {
         const token = localStorage.getItem('token');
         const groupName = localStorage.getItem('groupName');
@@ -183,6 +196,10 @@ async function displayAllMessages() {
     }
 }
 
+socket.on('receive-message', (message)=>{
+    displayAllMessages(message);
+})
+
 // Set interval to refresh messages every second...
 // const intervalId = setInterval(displayAllMessages, 1000);
 
@@ -207,6 +224,10 @@ const myUserId = decodedToken.userId;
 document.addEventListener('DOMContentLoaded', () => { 
     displayAllMessages();
     getAllUsersOfGroup();
+
+    socket.on('receive-message', (message)=>{
+        displayAllMessages(message);
+    })
 });
 
 const logOutButton = document.getElementById('log-out');

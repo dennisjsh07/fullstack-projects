@@ -13,3 +13,5 @@ const Group = sequelize.define('groups',{
 });
 
 module.exports = Group;
+ 
+ 

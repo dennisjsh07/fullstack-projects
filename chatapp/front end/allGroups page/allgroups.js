@@ -39,6 +39,10 @@ async function getInsideGroup(e){
     const option = document.getElementById('groups').value;
     // console.log('option>>>>', option)
     localStorage.setItem('groupName', option);
+
+    // use sockets...
+    socket.emit('join-room', option); // sending message to backend...
+
     // redirect to groupchat page...
     window.location.href = 'http://127.0.0.1:5500/chat%20page/chat.html';
 }
