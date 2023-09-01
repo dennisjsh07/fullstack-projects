@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const sequelize = require('./util/database');
 const http = require('http'); // for sockets...
+const fileUpload = require('express-fileupload'); // Import the express-fileupload middleware
 
 const userRouter = require('./router/user');
 const chatRouter = require('./router/chat');
@@ -31,6 +32,8 @@ const io = new Server(server, {
 });
 
 app.use(bodyParser.json());
+
+app.use(fileUpload());
 
 app.use('/user',userRouter);
 
@@ -68,7 +71,7 @@ sequelize
     }); // change app to server for sockets...
 })
 .catch(err=> console.log(err));
-
+ 
 
  
  

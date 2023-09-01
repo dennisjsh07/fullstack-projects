@@ -8,6 +8,8 @@ router.post('/send-message', userAuthentication.authenticate, chatController.add
 
 router.get('/get-message', userAuthentication.authenticate, chatController.getAllChat);
 
+router.post('/uploadFile', userAuthentication.authenticate, chatController.uploadFile);
+
 router.post('/addUserToGroup', userAuthentication.authenticate, chatController.addUserToGroup);
 
 router.get('/getUsersofGroup', chatController.getUsersofGroup);

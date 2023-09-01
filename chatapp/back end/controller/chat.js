@@ -2,6 +2,49 @@ const Chat = require('../model/chat');
 const User = require('../model/user');
 const Group = require('../model/group');
 const UserGroup = require('../model/usergroup');
+const AWS = require('aws-sdk');
+
+require('dotenv').config();
+
+
+exports.uploadFile = async(req, res, next)=>{
+    try{
+        const file = req.files.file; // Assuming you're using a middleware like 'express-fileupload'
+        const fileName = file.name;
+        // configure the IAM user credentials and the bucket...
+        const BUCKET_NAME = 'joshuachatapp';
+        const IAM_USER_KEY = process.env.ACCESS_KEY;
+        const IAM_USER_SECRET = process.env.SECRET_KEY;
+        
+        // configure AWS
+        AWS.config.update({
+            accessKeyId: IAM_USER_KEY,
+            secretAccessKey: IAM_USER_SECRET,
+        });
+
+        const s3 = new AWS.S3();
+
+        const params = {
+            Bucket: BUCKET_NAME,
+            Key: fileName,
+            Body: file.data,
+            ACL: 'public-read',
+        };
+
+        s3.upload(params, (err, data) => {
+            if (err) {
+                console.log('Error uploading to S3:', err);
+                return res.status(500).json({ error: 'Failed to upload the file.' });
+            }
+
+            console.log('File uploaded successfully:', data.Location);
+            return res.status(200).json({ message: 'File uploaded successfully.', fileUrl: data.Location });
+        });
+    } catch(err){
+        console.log('uploading files to s3 failed>>>>', err);
+        res.status(500).json({err: err});
+    }
+}
 
 exports.addUserToGroup = async(req, res, next)=>{
     try{
@@ -111,7 +154,7 @@ exports.makenewAdmin = async(req, res, next)=>{
 exports.addNewChat = async(req,res,next)=>{
     try{
         // console.log(req.body);
-        const {message} = req.body;
+        const {message, fileUrl} = req.body;
 
         const {groupName} = req.query;
         // console.log('groupName>>>>',groupName);
@@ -120,7 +163,7 @@ exports.addNewChat = async(req,res,next)=>{
         const existingGroup = await UserGroup.findOne({where: {groupName}});
         // console.log('existingGroup>>>>', existingGroup.groupId);
 
-        const addMessage = await Chat.create({message, name: req.user.name, userId: req.user.id, groupId: existingGroup.groupId});
+        const addMessage = await Chat.create({message,fileUrl, name: req.user.name, userId: req.user.id, groupId: existingGroup.groupId});
         res.status(201).json({newMessage: addMessage});
     } catch(err){
         console.log('adding new messsages failed>>>>', err);

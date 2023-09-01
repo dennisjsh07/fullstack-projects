@@ -84,14 +84,18 @@
             <div class="chat-box overflow-auto mb-3" id="chat-box" style="max-height: 500px;">
               <!-- More messages can be added here -->
             </div>
-            <form class="d-flex" id="addMessages">
+            <form class="d-flex mb-3" id="addMessages">
                 <input type="text" class="form-control flex-grow-1 me-2" id="textInput" placeholder="Type your message...">
-                <button type="submit" class="btn btn-primary ml-2">Send</button>
-            </form>          
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form> 
+            <label for="file">Upload files:</label>
+            <form class="d-flex mb-3" id="addFiles">
+              <input type="file" class="form-control me-2" name="file" id="file">
+              <button type="submit" class="btn btn-primary">upload</button>
+            </form>
           </div>
       </div>
     </div>
-  
     <!-- Add Bootstrap JS and Popper.js scripts (required for some Bootstrap features) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
     <script src="http://localhost:4000/socket.io/socket.io.js"></script>

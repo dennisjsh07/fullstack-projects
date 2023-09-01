@@ -134,15 +134,49 @@ async function onSubmit(e) {
     e.preventDefault();
 
     const message = document.getElementById('textInput').value;
-    socket.emit('send-message', message); // sending message to backend...
+
+    // add code to handle file upload here and get the file URL
+    let fileUrl = null; // Initialize fileUrl to null
+    const fileInput = document.getElementById('file');
+    if (fileInput.files.length > 0) {
+        // Perform file upload and get the file URL
+        try {
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            const token = localStorage.getItem('token');
+            const response = await axios.post(
+                'http://localhost:4000/chat/uploadFile',
+                formData,
+                {
+                    headers: {
+                        Authorization: token,
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+            );
+
+            if (response.status === 200) {
+                fileUrl = response.data.fileUrl;
+                console.log('File uploaded successfully:', fileUrl);
+            }
+        } catch (err) {
+            console.log('Error uploading file:', err);
+        }
+    }
+
+    socket.emit('send-message', { message, fileUrl });
 
     try {
         const token = localStorage.getItem('token');
         const groupName = localStorage.getItem('groupName');
-        await axios.post('http://localhost:4000/chat/send-message', { message }, { 
-            headers: { 'Authorization': token },
-            params: {groupName}
-        });
+        await axios.post(
+            'http://localhost:4000/chat/send-message',
+            { message, fileUrl }, // Include the file URL in the request body
+            {
+                headers: { Authorization: token },
+                params: { groupName },
+            }
+        );
         displayAllMessages();
     } catch (err) {
         console.log(err);
@@ -150,6 +184,7 @@ async function onSubmit(e) {
 
     form.reset();
 }
+
 
 // Function to fetch and display all chat messages.......................
 async function displayAllMessages() {
@@ -175,7 +210,16 @@ async function displayAllMessages() {
         // display messages from the local storage...
         lsMessage.forEach(message => {
             const messageElement = document.createElement('div');
-            messageElement.textContent = `${message.name}: ${message.message}`;
+
+            // Check if the message contains a file URL
+            if (message.fileUrl) {
+                const link = document.createElement('a');
+                link.href = message.fileUrl;
+                link.textContent = 'View File';
+                messageElement.appendChild(link);
+            } else {
+                messageElement.textContent = `${message.name}: ${message.message}`;
+            }
             
             if (message.userId === myUserId) {
                 // Message is outgoing, add to alert-success
@@ -202,6 +246,33 @@ socket.on('receive-message', (message)=>{
 
 // Set interval to refresh messages every second...
 // const intervalId = setInterval(displayAllMessages, 1000);
+
+// upload files  to s3...
+const uploadFiles = document.getElementById('addFiles');
+// console.log(uploadFiles);
+uploadFiles.addEventListener('submit', onUpload);
+
+async function onUpload(e){
+    e.preventDefault();
+
+    const formData = new FormData();
+    const fileInput = document.getElementById('file');
+    formData.append('file', fileInput.files[0]);
+
+    try{
+       const token = localStorage.getItem('token');
+        const response = await axios.post('http://localhost:4000/chat/uploadFile', formData, {
+            headers: { 'Authorization': token, 'Content-Type': 'multipart/form-data' },
+        });
+
+        if (response.status === 200) {
+            console.log('File uploaded successfully:', response.data.fileUrl);
+            // Handle the uploaded file URL as needed (e.g., display to the user)
+        }
+    } catch(err){
+        console.log('uploading files to s3 failed >>>>', err)
+    }
+}
 
 function parseJwt (token) {
     var base64Url = token.split('.')[1];
