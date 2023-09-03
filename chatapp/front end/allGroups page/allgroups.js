@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const form = document.querySelector('form');
 // console.log(form);
 form.addEventListener('submit', getInsideGroup);
+import { displayAllMessages } from '../chat page/chat';
 
 async function getInsideGroup(e){
     e.preventDefault();
@@ -41,7 +42,9 @@ async function getInsideGroup(e){
     localStorage.setItem('groupName', option);
 
     // use sockets...
-    socket.emit('join-room', option); // sending message to backend...
+    socket.emit('join-room', option, message=>{
+        displayAllMessages(message);
+    }); // sending message to backend...
 
     // redirect to groupchat page...
     window.location.href = 'http://127.0.0.1:5500/chat%20page/chat.html';

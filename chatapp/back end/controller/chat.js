@@ -154,7 +154,8 @@ exports.makenewAdmin = async(req, res, next)=>{
 exports.addNewChat = async(req,res,next)=>{
     try{
         // console.log(req.body);
-        const {message, fileUrl} = req.body;
+        // const {message, fileUrl} = req.body;
+        const {message} = req.body;
 
         const {groupName} = req.query;
         // console.log('groupName>>>>',groupName);
@@ -163,7 +164,7 @@ exports.addNewChat = async(req,res,next)=>{
         const existingGroup = await UserGroup.findOne({where: {groupName}});
         // console.log('existingGroup>>>>', existingGroup.groupId);
 
-        const addMessage = await Chat.create({message,fileUrl, name: req.user.name, userId: req.user.id, groupId: existingGroup.groupId});
+        const addMessage = await Chat.create({message, name: req.user.name, userId: req.user.id, groupId: existingGroup.groupId});
         res.status(201).json({newMessage: addMessage});
     } catch(err){
         console.log('adding new messsages failed>>>>', err);

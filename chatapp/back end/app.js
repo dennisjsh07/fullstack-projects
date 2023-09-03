@@ -50,16 +50,9 @@ User.belongsToMany(Group , {through : UserGroup});
 Group.hasMany(Chat);
 Chat.belongsTo(Group);
 
-io.on('connection', (socket)=>{
-    console.log('socket.id >>>>', socket.id);
-    socket.on('send-message', (message)=>{
-            socket.broadcast.emit('receive-message', message);
-        console.log(message);
-    })
-    socket.on('join-room', (option)=>{
-        socket.join(option);
-    })
-});
+// Start the cron job
+const cronJob = require('./cornjobs/cornJobs');
+cronJob.cronJob.start();
 
 sequelize
 // .sync({force: true})
@@ -72,6 +65,17 @@ sequelize
 })
 .catch(err=> console.log(err));
  
-
+io.on('connection', (socket)=>{
+    console.log('socket.id >>>>', socket.id);
+    socket.on('send-message', (message)=>{
+            socket.broadcast.emit('receive-message', message);
+        console.log(message);
+    })
+    socket.on('join-room', (option, cb)=>{
+        socket.join(option);
+        cb(`joined ${option}`)
+    })
+});
+ 
  
  

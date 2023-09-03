@@ -169,9 +169,7 @@ async function onSubmit(e) {
     try {
         const token = localStorage.getItem('token');
         const groupName = localStorage.getItem('groupName');
-        await axios.post(
-            'http://localhost:4000/chat/send-message',
-            { message, fileUrl }, // Include the file URL in the request body
+        await axios.post('http://localhost:4000/chat/send-message', { message, fileUrl }, // Include the file URL in the request body
             {
                 headers: { Authorization: token },
                 params: { groupName },
@@ -312,3 +310,4 @@ logOutButton.addEventListener('click', () => {
     window.location.href = 'http://127.0.0.1:5500/login%20page/login.html';
 });
  
+export { displayAllMessages };
