@@ -4,7 +4,7 @@ const MongoClient = mongodb.MongoClient;
 let db;
 
 const mongoConnect = (callback)=>{
-  MongoClient.connect('mongodb+srv://dennisjshofficial:P6RLFtpfHie6up8b@dennisjsh.q5qgsgx.mongodb.net/shop?retryWrites=true')
+  MongoClient.connect('mongodb+srv://dennisjshofficial:wO22Kgq8wN5XBCGv@dennisjsh.q5qgsgx.mongodb.net/shop?retryWrites=true')
   .then((client)=>{
     console.log('connected');
     db = client.db() // you can overwrite the database here by passing inside the callback.
