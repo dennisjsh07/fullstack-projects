@@ -17,7 +17,8 @@ exports.postAddProduct = (req, res, next) => {
     title: title,
     price: price,
     description: description,
-    imageUrl: imageUrl
+    imageUrl: imageUrl,
+    userId: req.user //mongoose will extract only the id firld from the entire user object...
   });
   product
   .save()
@@ -75,10 +76,17 @@ exports.postEditProduct = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => {
   Product.find()
+    // incase if you want to get all the objects present in userId and not only the id use .populate('userId')...
+    // .select('title price -_id') // selecting only title and price and excluding _id.
+
+    // incase if you want to get all the objects present in userId and not only the id use .populate('userId')...
+    // .populate('userId', 'name') // selecting only name.
+  ///////////////
     .then(products => {
+      console.log(products);
       res.render('admin/products', {
         prods: products,
-        pageTitle: 'Admin Products',
+        pageTitle: 'Admin Products', 
         path: '/admin/products'
       });
     })
