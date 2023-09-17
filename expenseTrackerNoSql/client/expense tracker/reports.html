@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <title>Reports</title>
+</head>
+<body>
+    <nav class="navbar bg-dark border-bottom border-body mb-3" data-bs-theme="dark">
+        <div class="container">
+            <a style="color: white; text-decoration: none;" href="expense.html">Expense Tracker</a>
+            <a style="color: white; text-decoration: none;" href="leaderboard.html">Leader Board</a>
+            <a class="navbar-brand" style="color: white; text-decoration: none;" href="reports.html">Reports</a>
+            <button id="log-out" class="btn btn-light">Log Out</button>
+        </div>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    </nav>
+    <div class="container">
+        <h3>Daily Reports</h3><hr>
+        <div class="mb-3">
+            <label for="startDate" class="form-label">Start Date: </label>
+            <input type="date" name="startDate" id="startDate" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="endDate" class="form-label">End Date: </label>
+            <input type="date" name="endDate" id="endDate" class="form-control" required>
+        </div>
+        <div>
+            <button class="btn btn-primary" id="generateReport">Generate Report</button>
+        </div><br>
+        <table class="table table-striped table-info" id="dailyExpenses-table">
+            <thead>
+                <tr>
+                    <th scope="col">Expense Date</th>
+                    <th scope="col">Expense Amount</th>
+                    <th scope="col">Expense Description</th>
+                    <th scope="col">Expense Category</th>
+                </tr>
+            </thead>
+            <tbody id="dailyExpenses-table"></tbody>
+        </table><br>
+        <br><br>
+        <h3>Monthly Reports</h3><hr>
+        <div class="mb-3">
+            <label for="reportMonth" class="form-label">Select Month and Year: </label>
+            <input type="month" name="reportMonth" id="reportMonth" class="form-control" required>
+        </div>
+        <div>
+            <button class="btn btn-primary" id="generateMonthReport">Generate Monthly Report</button>
+        </div><br>
+        <table class="table table-striped table-info" id="monthlyExpenses-table">
+            <thead>
+                <tr>
+                    <th scope="col">Expense Date</th>
+                    <th scope="col">Expense Amount</th>
+                    <th scope="col">Expense Description</th>
+                    <th scope="col">Expense Category</th>
+                </tr>
+            </thead>
+            <tbody id="monthlyExpenses-table"></tbody>
+        </table><br>
+        <br><br>
+        <h3>Yearly Reports</h3><hr>
+            <div class="mb-3">
+                <label for="reportYear" class="form-label">Select Year: </label>
+                <input type="number" name="reportYear" id="reportYear" class="form-control" min="2000" max="2100" required>
+            </div>
+            <div>
+                <button class="btn btn-primary" id="generateYearReport">Generate Yearly Report</button>                    
+            </div><br>
+            <table class="table table-striped table-info" id="yearlyExpenses-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Month</th>
+                        <th scope="col">Total Expense</th>
+                    </tr>
+                </thead>
+                <tbody id="yearlyExpenses-tbody"></tbody>
+            </table><br>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <script src="reports.js"></script>
+</body>
+</html>
+ 
+  
